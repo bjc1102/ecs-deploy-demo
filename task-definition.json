@@ -1,0 +1,26 @@
+{
+  "family": "ecs-gpu-test",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["EC2"],
+  "executionRoleArn": "arn:aws:iam::__AWS_ACCOUNT_ID__:role/ecsTaskExecutionRole",
+  "cpu": "1024",
+  "memory": "2048",
+  "containerDefinitions": [
+    {
+      "name": "gpu-test",
+      "image": "__AWS_ACCOUNT_ID__.dkr.ecr.ap-northeast-2.amazonaws.com/ecs-gpu-test:latest",
+      "essential": true,
+      "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+      "resourceRequirements": [{"type": "GPU", "value": "1"}],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-gpu-test",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}
