@@ -25,5 +25,5 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
 
-print("GPU Test Server on :8080")
+print("GPU Test Server v2 on :8080")
 http.server.HTTPServer(("", 8080), Handler).serve_forever()
