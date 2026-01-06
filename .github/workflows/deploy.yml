@@ -26,7 +26,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     outputs:
-      image_uri: ${{ steps.image.outputs.uri }}
+      image_tag: ${{ steps.image.outputs.tag }}
 
     steps:
       - name: Checkout
@@ -66,11 +66,9 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
 
-      - name: Output image URI
+      - name: Output image tag
         id: image
-        run: |
-          SHORT_SHA=${GITHUB_SHA::7}
-          echo "uri=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:$SHORT_SHA" >> $GITHUB_OUTPUT
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
   deploy:
     runs-on: ubuntu-latest
@@ -97,7 +95,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ needs.build-and-push.outputs.image_uri }}
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ needs.build-and-push.outputs.image_tag }}
 
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
